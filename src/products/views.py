@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.views.generic import DetailView, ListView
 from django.shortcuts import render, get_object_or_404
 from django.http import Http404
@@ -14,7 +15,25 @@ class ProductListView(ListView):
 		context = super().get_context_data()
 		print(context)
 		context["now"] = timezone.now
+		context["query"] = self.request.GET.get("q")
 		return context
+
+	def get_queryset(self, *args, **kwargs):
+		qs = super().get_queryset(*args, **kwargs)
+		query = self.request.GET.get("q")
+		if query:
+			qs = self.model.objects.filter(
+				Q(title__icontains=query) | 
+				Q(description__icontains=query)
+				)
+			try:
+				qs2 = self.model.objects.filet(
+					Q(price=query)
+					)
+				qs = (qs | qs2).distinct()
+			except:
+				pass
+		return qs
 
 class ProductDetailView(DetailView):
 	model = Product
