@@ -8,6 +8,7 @@ from .models import Product
 
 class ProductListView(ListView):
 	model = Product
+	# queryset = Product.objects.all()
 
 	def get_context_data(self, *args, **kwargs):
 		context = super().get_context_data()
