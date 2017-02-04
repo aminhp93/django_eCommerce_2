@@ -1,0 +1,31 @@
+{% extends 'base.html' %} {% block content %}
+<table class="table">
+	<thead>
+		<th></th>
+		<th>
+			Detail
+		</th>
+	</thead>
+    {% for object in object_list %}
+	<tr>
+		<td>
+			{{ forloop.counter }}
+		</td>
+		<td>
+			<a href="{{ object.get_absolute_url }}">{{ object.title }}</a>
+		</td>
+	</tr>
+    {% endfor %}
+</table>
+<form action="" method="POST">{% csrf_token %}
+	<!-- {{ formset.as_p }} -->
+	{{ formset.management_form }}
+	{% for form in formset %}
+	{{ form.instance.product.title }}
+	{{ form.instance.title }}
+	{{ form.as_p }}
+	{% endfor %}
+
+	<input type="submit">
+</form>
+{% endblock %}
