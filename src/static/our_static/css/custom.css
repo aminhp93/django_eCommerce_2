@@ -1,3 +1,8 @@
 .navbar-static-top {
-	margin-bottom: 0px;
+    margin-bottom: 0px;
+}
+
+.sale_price {
+    color: red;
+    text-decoration: line-through;
 }

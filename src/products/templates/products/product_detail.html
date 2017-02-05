@@ -1,4 +1,29 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %}
+<script>
+ {% block jquery %}
+
+ function setPrice(){
+    var price = $(".variation_select option:selected").attr("data-price");
+
+    var sale_price = $(".variation_select option:selected").attr("data-sale-price");
+    if (sale_price != "" && sale_price != "None" && sale_price != null){
+        $("#price").html("<h3>" + sale_price + " <small class='sale_price'>Original price: " + price + "</small></h3>");
+    } else {
+        $("#price").text(price);
+    }
+
+    var img = $(".variation_select optioin:selected").attr("data-img");
+    $("img").attr("src", img);
+ }
+   
+setPrice()
+$(".variation_select").change(function(){
+    setPrice()
+})
+{% endblock %}   
+</script>
+
+{% block content %}
 <div class="row">
     <div class="col-sm-8">
         <h1>Product detail: {{ object.title }}</h1>
@@ -7,7 +32,7 @@
         	{% for img in object.productimage_set.all %}
         		<!-- {{ img.image.file }} -->
         		<!-- {{ img.image.url }} -->
-        		<img src="{{ img.image.url }}" alt="" class="img-responsive">
+        		<img src="{{ img.image.url }}" alt="" class="img-responsive" id="img">
         		
         	{% endfor %}
         </div>
@@ -16,15 +41,18 @@
     </div>
     <!-- Product Side Bar -->
     <div class="col-sm-4">
-    	<h1>{{ object.price }}</h1>
+    	<h3 id="price">{{ object.price }}</h3>
         {% if object.variation_set.count > 1 %}
-        <select name="" id="" class="form-control">
+        <select name="" id="" class="form-control variation_select">
             {% for variation in object.variation_set.all %}
-            <option>{{ variation }}</option>
+            <option data-image="" data-sale-price="{{ variation.sale_price }}" data-price="{{ variation.price }}" value="{{ variation.id }}">{{ variation }}</option>
             {% endfor %}
         </select>
         {% endif %}<br>
-        <a href="">Add to cart</a>
+        <a href=""><i class="fa fa-shopping-cart" aria-hidden="true"></i> Add to cart</a></br>
+        <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}/"><i class="fa fa-facebook-square" aria-hidden="true"></i> Share on Facebook</a>
+        <br>
+        <a href="https://twitter.com/home?status=I'm%20going%20to%20learn%20to%20Code...%20Come%20build%20an%20web%20apsp%20with%20me!%20%23CFE%20and%20@justinmitchel%20http://codingforentrepreneurs.com/"> <i class="fa fa-twitter-square" aria-hidden="true"></i> Share on Twitter</a>
     </div>
     <!-- End Product Side Bar -->
 </div>

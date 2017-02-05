@@ -8,8 +8,9 @@ from django.utils import timezone
 # Create your views here.
 from .forms import VariationInventoryFormSet
 from .models import Product, Variation
+from .mixins import StaffRequiredMixin
 
-class VariationListView(ListView):
+class VariationListView(StaffRequiredMixin, ListView):
 	model = Variation
 	queryset = Variation.objects.all()
 
@@ -33,6 +34,7 @@ class VariationListView(ListView):
 			formset.save(commit=False)
 			for form in formset:
 				new_item = form.save(commit=False)
+				# if new_item.title:
 				product_pk = self.kwargs.get("pk")
 				product = get_object_or_404(Product, pk=product_pk)
 				new_item.product = product
