@@ -1,58 +1,67 @@
 {% extends 'base.html' %}
 <script>
- {% block jquery %}
+{ % block jquery %
+}
 
- function setPrice(){
+function setPrice() {
     var price = $(".variation_select option:selected").attr("data-price");
 
     var sale_price = $(".variation_select option:selected").attr("data-sale-price");
-    if (sale_price != "" && sale_price != "None" && sale_price != null){
-        $("#price").html("<h3>" + sale_price + " <small class='sale_price'>Original price: " + price + "</small></h3>");
+    if (sale_price != "" && sale_price != "None" && sale_price != null) {
+        $("#price").html("<h3>" + sale_price + " <small class='original-price'>" + price + "</small></h3>");
     } else {
         $("#price").text(price);
     }
 
     var img = $(".variation_select optioin:selected").attr("data-img");
     $("img").attr("src", img);
- }
-   
-setPrice()
-$(".variation_select").change(function(){
-    setPrice()
-})
-{% endblock %}   
-</script>
+}
 
+setPrice()
+$(".variation_select").change(function() {
+    setPrice()
+}) { % endblock %
+}
+</script>
 {% block content %}
 <div class="row">
     <div class="col-sm-8">
-        <h1>Product detail: {{ object.title }}</h1>
-        {% if object.productimage_set.count > 0 %}
+        <h1>Product detail: {{ object.title }}</h1> {% if object.productimage_set.count > 0 %}
         <div>
-        	{% for img in object.productimage_set.all %}
-        		<!-- {{ img.image.file }} -->
-        		<!-- {{ img.image.url }} -->
-        		<img src="{{ img.image.url }}" alt="" class="img-responsive" id="img">
-        		
-        	{% endfor %}
+            {% for img in object.productimage_set.all %}
+            <!-- {{ img.image.file }} -->
+            <!-- {{ img.image.url }} -->
+            <img src="{{ img.image.url }}" alt="" class="img-responsive" id="img"> {% endfor %}
         </div>
         {% endif %}
         <div>Description: {{ object.description }}</div>
     </div>
     <!-- Product Side Bar -->
     <div class="col-sm-4">
-    	<h3 id="price">{{ object.price }}</h3>
-        {% if object.variation_set.count > 1 %}
+        <h3 id="price">
+        {% if object.variation_set.first.sale_price %}
+            {{ object.variation_set.first.sale_price }}
+            <small class="original-price">{{ object.variation_set.first.price }}</small>
+        {% else %}
+            {{ object.variation_set.first.price }}
+        {% endif %}</h3> {% if object.variation_set.count > 1 %}
         <select name="" id="" class="form-control variation_select">
             {% for variation in object.variation_set.all %}
             <option data-image="" data-sale-price="{{ variation.sale_price }}" data-price="{{ variation.price }}" value="{{ variation.id }}">{{ variation }}</option>
             {% endfor %}
         </select>
-        {% endif %}<br>
+        {% endif %}
+        <br>
         <a href=""><i class="fa fa-shopping-cart" aria-hidden="true"></i> Add to cart</a></br>
         <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}/"><i class="fa fa-facebook-square" aria-hidden="true"></i> Share on Facebook</a>
         <br>
         <a href="https://twitter.com/home?status=I'm%20going%20to%20learn%20to%20Code...%20Come%20build%20an%20web%20apsp%20with%20me!%20%23CFE%20and%20@justinmitchel%20http://codingforentrepreneurs.com/"> <i class="fa fa-twitter-square" aria-hidden="true"></i> Share on Twitter</a>
+        <br>
+        <div>Related Products</div>
+        {% for product in related %}
+        <div><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></div>
+        {% endfor %}
+
     </div>
     <!-- End Product Side Bar -->
 </div>
