@@ -31,11 +31,20 @@ class Product(models.Model):
 
 	objects = ProductManager()
 
+	class Meta:
+		ordering = ["-title"]
+
 	def __str__(self):
 		return self.title
 
 	def get_absolute_url(self):
 		return reverse("product_detail", kwargs={"pk": self.pk})
+
+	def get_image_url(self):
+		img = self.productimage_set.first()
+		if img:
+			return img.image.url
+		return img
 
 class Variation(models.Model):
 	product = models.ForeignKey(Product)

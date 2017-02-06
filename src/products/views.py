@@ -1,3 +1,5 @@
+import random
+
 from django.contrib import messages
 from django.db.models import Q
 from django.views.generic import DetailView, ListView
@@ -93,7 +95,8 @@ class ProductDetailView(DetailView):
 	def get_context_data(self, *args, **kwargs):
 		context = super().get_context_data(*args, **kwargs)
 		instance = self.get_object()
-		context["related"] = Product.objects.get_related(instance).order_by("title")[:6]
+
+		context["related"] = sorted(Product.objects.get_related(instance).order_by("title")[:6], key=lambda x: random.random())
 		return context
 
 def product_detail_view_func(request, id):

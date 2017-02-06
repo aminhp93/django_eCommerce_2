@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 <script>
-{ % block jquery %
-}
+{% block jquery %}
 
 function setPrice() {
     var price = $(".variation_select option:selected").attr("data-price");
@@ -20,18 +19,16 @@ function setPrice() {
 setPrice()
 $(".variation_select").change(function() {
     setPrice()
-}) { % endblock %
-}
+}) {% endblock %}
 </script>
 {% block content %}
 <div class="row">
     <div class="col-sm-8">
-        <h1>Product detail: {{ object.title }}</h1> {% if object.productimage_set.count > 0 %}
+        <h1>Product detail: {{ object.title }}</h1> {% if object.get_image_url %}
         <div>
-            {% for img in object.productimage_set.all %}
             <!-- {{ img.image.file }} -->
             <!-- {{ img.image.url }} -->
-            <img src="{{ img.image.url }}" alt="" class="img-responsive" id="img"> {% endfor %}
+            <img src="{{ object.get_image_url }}" alt="" class="img-responsive" id="img">
         </div>
         {% endif %}
         <div>Description: {{ object.description }}</div>
@@ -57,11 +54,21 @@ $(".variation_select").change(function() {
         <br>
         <a href="https://twitter.com/home?status=I'm%20going%20to%20learn%20to%20Code...%20Come%20build%20an%20web%20apsp%20with%20me!%20%23CFE%20and%20@justinmitchel%20http://codingforentrepreneurs.com/"> <i class="fa fa-twitter-square" aria-hidden="true"></i> Share on Twitter</a>
         <br>
-        <div>Related Products</div>
-        {% for product in related %}
-        <div><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></div>
-        {% endfor %}
-
+        <h3>Related Products</h3>
+        <div class="row">
+            {% for product in related %}
+            <div class="col-sm-6">
+                <div class="thumbnail text-center">
+                    <h5><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></h5> {% if object.get_image_url %}
+                    <div>
+                        <a href="{{ product.get_absolute_url }}"><img src="{{ object.get_image_url }}" alt="" class="img-responsive" id="img"></a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% cycle '' '</div><div class="row">' %}
+            {% endfor %}
+        </div>
     </div>
     <!-- End Product Side Bar -->
 </div>
