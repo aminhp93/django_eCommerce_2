@@ -58,13 +58,7 @@ $(".variation_select").change(function() {
         <div class="row">
             {% for product in related %}
             <div class="col-sm-6">
-                <div class="thumbnail text-center">
-                    <h5><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></h5> {% if object.get_image_url %}
-                    <div>
-                        <a href="{{ product.get_absolute_url }}"><img src="{{ object.get_image_url }}" alt="" class="img-responsive" id="img"></a>
-                    </div>
-                    {% endif %}
-                </div>
+                {% include 'products/product_thumbnail.html' with object=product price="True" %}
             </div>
             {% cycle '' '</div><div class="row">' %}
             {% endfor %}
