@@ -3,12 +3,14 @@ from django.core.mail import send_mail
 from django.shortcuts import render
 from .forms import SignUpForm, ContactForm
 
+from products.models import ProductFeatured
 from .models import SignUp
 # Create your views here.
 
 def home(request):
 	title = "My title"
 
+	featured_image = ProductFeatured.objects.first()
 	if request.user.is_authenticated():
 		title = "My title {}".format(request.user)
 
@@ -17,6 +19,7 @@ def home(request):
 	context = {
 		"title": title,
 		"form": form,
+		"featured_image": featured_image,
 	}
 
 	if form.is_valid():

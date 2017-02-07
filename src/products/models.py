@@ -121,3 +121,29 @@ class Category(models.Model):
 
 	def get_absolute_url(self):
 		return reverse("category_detail", kwargs={"slug": self.slug})
+
+def image_upload_to_featured(instance, filename):
+	title = instance.product.title
+	slug = slugify(title)
+	file_extension = filename.split(".")[1]
+	new_filename = "{}.{}".format(instance.id, file_extension)
+	return "products/{}/featured/{}".format(slug, filename)
+
+class ProductFeatured(models.Model):
+	product = models.ForeignKey(Product)
+	image = models.ImageField(upload_to=image_upload_to_featured)
+	title = models.CharField(max_length=120, null=True, blank=True)
+	text = models.CharField(max_length=120, null=True, blank=True)
+	text_right = models.BooleanField(default=False)
+	text_css_color = models.CharField(max_length=6, null=True, blank=True)
+	show_price = models.BooleanField(default=False)
+	active = models.BooleanField(default=True)
+	make_image_background = models.BooleanField(default=False)
+
+	def __str__(self):
+		return self.product.title
+
+
+
+
+

@@ -1,22 +1,41 @@
-{% extends 'base.html' %} {% load crispy_forms_tags %} {% block head_title %}Welcome | {% endblock %} {% block style %} .lead { text-align: center; } {% endblock %} {% block jumbotron %}
- {% if not request.user.is_authenticated %}
-<div class="jumbotron">
-    <div class="container">
-        <div class="row">
-            <div class="col-sm-6">
-                <h1>Try Django 1.8</h1>
-                <p>This example is a quick exercise to illustrate how the default, static and fixed to top navbar work. It includes the responsive CSS and HTML, so it also adapts to your viewport and device.</p>
-                <p>To see the difference between static and fixed top navbars, just scroll.</p>
-                <p>
-                    <a class="btn btn-lg btn-primary" href="" role="button">Join us &raquo;</a>
-                </p>
-            </div>
-            <div class="col-sm-6">
-                <iframe width="460" height="315" src="https://www.youtube.com/embed/GND6rfR4Gio" frameborder="0" allowfullscreen></iframe>
+{% extends 'base.html' %} {% load crispy_forms_tags %} {% block head_title %}Welcome | {% endblock %} 
+{% block style %} 
+.lead { text-align: center; } 
+.jumbotron{
+    {% if featured_image.make_image_background %}
+        background-image: url("{{ featured_image.image.url }}");
+        background-repeat: no-repeat;
+        background-color: #000;
+        background-size: cover;
+        background-position-y:-100px;
+        {% if featured_image.text_css_color %}
+            color: #{{ featured_image.text_css_color }};
+        {% endif %}
+    {% endif %}
+}
+{% endblock %} {% block jumbotron %}
+{% if not request.user.is_authenticated %}
+
+    {% if featured_image %}
+
+        <div class="jumbotron">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-6 {% if featured_image.text_right %} pull-right {% endif %}">
+                        <h1>{{ featured_image.product.title }}</h1>
+                        <p>{{ featured_imgage.product.description }}</p>
+                        <p>
+                            <a class="btn btn-lg btn-primary" href="{{ featured_image.product.get_absolute_url }}" role="button">More detail &raquo;</a>
+                        </p>
+                    </div>
+                    <div class="col-sm-6">
+                        <img src="{{ featured_image.image.url }}" class="img-responsive" alt="">
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
+        
+    {% endif %}
 {% endif %}
 {% endblock %} {% block content %}
  {% if request.user.is_authenticated %}

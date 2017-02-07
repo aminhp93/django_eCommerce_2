@@ -6,3 +6,9 @@
     color: red;
     text-decoration: line-through;
 }
+
+/*.jumbotron{
+	{% if featured_image.make_image_background %}
+		background-image: url("{{ featured_image.image.url }}")
+	{% endif %}
+}*/
