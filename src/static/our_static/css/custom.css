@@ -7,8 +7,7 @@
     text-decoration: line-through;
 }
 
-/*.jumbotron{
-	{% if featured_image.make_image_background %}
-		background-image: url("{{ featured_image.image.url }}")
-	{% endif %}
-}*/
+.fa-navbar-cart{
+	font-size: 18px;
+	vertical-align: middle;
+}
