@@ -29,7 +29,7 @@
                         </p>
                     </div>
                     <div class="col-sm-6">
-                        <img src="{{ featured_image.image.url }}" class="img-responsive" alt="">
+                        <img src="{{ featured_imasge.image.url }}" class="img-responsive" alt="">
                     </div>
                 </div>
             </div>
@@ -37,57 +37,68 @@
         
     {% endif %}
 {% endif %}
-{% endblock %} {% block content %}
- {% if request.user.is_authenticated %}
-<h1>You are logged in!</h1>
+{% endblock %} 
+{% block content %}
+    <h1>Recommended Products</h1>   
+    <div class="row">
+        
+        {% include "products/products.html" with object_list=products col_class_set="col-sm-3" %}
+    </div>
+    <h1>Featured Products</h1>
+    <div class="row">
+        
+        {% include "products/products.html" with object_list=products2 col_class_set="col-sm-3" %}
+    </div>
+    <!-- {% if request.user.is_authenticated %}
+    <h1>You are logged in!</h1>
 
-    {% if queryset %}
-    <h2>Welcome Staff</h2>
-    <table class='table'>
-    {% for instance in queryset %}
-        <tr><td>{{ forloop.counter }}</td><td>{{ instance.email }}</td><td>{{ instance.full_name }}</td><td>{{ instance.timestamp|timesince }} ago</td></tr>
-        {% if instance.email == "abc@gmail.edu" %}
-        <tr><td>is equal</td></tr>
+        {% if queryset %}
+        <h2>Welcome Staff</h2>
+        <table class='table'>
+        {% for instance in queryset %}
+            <tr><td>{{ forloop.counter }}</td><td>{{ instance.email }}</td><td>{{ instance.full_name }}</td><td>{{ instance.timestamp|timesince }} ago</td></tr>
+            {% if instance.email == "abc@gmail.edu" %}
+            <tr><td>is equal</td></tr>
+            {% endif %}
+        {% endfor %}
+        </table>
+
         {% endif %}
-    {% endfor %}
-    </table>
 
-    {% endif %}
-
- {% else %}
-<div class="row">
-    <div class="col-md-3">
-        <div class="lead">
-            Build with Django & Bootstrap <br>
-            <i class="fa fa-balance-scale fa-2x" aria-hidden="true"></i>
+    {% else %}
+    <div class="row">
+        <div class="col-md-3">
+            <div class="lead">
+                Build with Django & Bootstrap <br>
+                <i class="fa fa-balance-scale fa-2x" aria-hidden="true"></i>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="lead">
+                Create for starter
+                <br>
+                <span class="fa-stack fa-lg">
+                    <i class="fa fa-camera fa-stack-1x"></i>
+                    <i class="fa fa-ban fa-stack-2x text-danger"></i>
+                </span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="lead">
+                Always Open Source
+                <i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+        <div class="col-xs-8 col-sm-6 col-md-3 pull-right">
+            <div class="lead">
+                {{ title }}
+            </div>
+            <form action="" method="POST">
+                {% csrf_token %} {{ form|crispy }}
+                <input type="submit" value="Sign Up" class="btn btn-primary">
+            </form>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="lead">
-            Create for starter
-            <br>
-            <span class="fa-stack fa-lg">
-                <i class="fa fa-camera fa-stack-1x"></i>
-                <i class="fa fa-ban fa-stack-2x text-danger"></i>
-            </span>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="lead">
-            Always Open Source
-            <i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
-            <span class="sr-only">Loading...</span>
-        </div>
-    </div>
-    <div class="col-xs-8 col-sm-6 col-md-3 pull-right">
-        <div class="lead">
-            {{ title }}
-        </div>
-        <form action="" method="POST">
-            {% csrf_token %} {{ form|crispy }}
-            <input type="submit" value="Sign Up" class="btn btn-primary">
-        </form>
-    </div>
-</div>
-{% endif %}
+    {% endif %} -->
 {% endblock %}

@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     # third party app
     'crispy_forms',
     # my apps
+    'carts',
     'newsletter',
     'products',
 ]

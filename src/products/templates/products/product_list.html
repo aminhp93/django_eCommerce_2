@@ -1,25 +1,5 @@
 {% extends 'base.html' %} {% block content %}
 <br>
 <h1>All products <small><a href="{% url 'categories' %}">Categories</a></small></h1>
-<table class="table">
-	<thead>
-		<th></th>
-		<th>
-			Detail
-		</th>
-	</thead>
-    {% for object in object_list %}
-    <div class="col-xs-2">
-        {% include 'products/product_thumbnail.html' with object=object price="True" %}
-    </div>
-	<tr>
-		<td>
-			{{ forloop.counter }}
-		</td>
-		<td>
-			<a href="{{ object.get_absolute_url }}">{{ object.title }}</a>
-		</td>
-	</tr>
-    {% endfor %}
-</table>
+{% include 'products/products.html' with object_list=object_list %}
 {% endblock %}

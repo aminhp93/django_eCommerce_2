@@ -3,7 +3,7 @@ from django.core.mail import send_mail
 from django.shortcuts import render
 from .forms import SignUpForm, ContactForm
 
-from products.models import ProductFeatured
+from products.models import ProductFeatured, Product
 from .models import SignUp
 # Create your views here.
 
@@ -11,6 +11,9 @@ def home(request):
 	title = "My title"
 
 	featured_image = ProductFeatured.objects.first()
+	products = Product.objects.all().order_by("?")[:6]
+	products2 = Product.objects.all().order_by("?")[:6]
+
 	if request.user.is_authenticated():
 		title = "My title {}".format(request.user)
 
@@ -20,6 +23,8 @@ def home(request):
 		"title": title,
 		"form": form,
 		"featured_image": featured_image,
+		"products": products,
+		"products2": products2,
 	}
 
 	if form.is_valid():
@@ -34,20 +39,6 @@ def home(request):
 		instance.save()
 		context = {
 			"title": "Thank you",
-		}
-
-	if request.user.is_authenticated() and request.user.is_staff:
-		#print(SignUp.objects.all())
-		# i = 1
-		# for instance in SignUp.objects.all():
-		# 	print(i)
-		# 	print(instance.full_name)
-		# 	i += 1
-
-		queryset = SignUp.objects.all().order_by('-timestamp') #.filter(full_name__iexact="Justin")
-		#print(SignUp.objects.all().order_by('-timestamp').filter(full_name__iexact="Justin").count())
-		context = {
-			"queryset": queryset
 		}
 
 	return render(request, "home.html", context)
