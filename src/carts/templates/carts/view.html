@@ -2,37 +2,64 @@
 <script>
 {% block jquery %}
 	$(".item-quantity").change(function(){
-		$(this).next(".btn-update").fadeIn();
+		// $(this).next(".btn-update").fadeIn();
+		// e.preventDefault();
+
+	    // var form_data = $("#add-form").serialize();
+	    var item = $(this).prev("input[type='hidden']").val();
+	    console.log(item);
+	    var quantity = $(this).val();
+	    var data = {
+	    	item: item,
+	    	quantity: quantity,
+	    }
+	    console.log(data);
+	    $.ajax({
+	        type: "GET",
+	        url: "{% url 'carts' %}",
+	        data: data,
+	        success: function(data){
+	            console.log(data)
+	            $("#jquery-message").text("Added " + data.item_added + " Deleted " + data.delete)
+	            if (data.delete){
+	            	$("#item-"+item).fadeOut();
+	            } else {
+	            	$("#item-line-total-"+item).text(data.line_total);
+	            	$("#subtotal").text(data.subtotal);
+	            }
+	        },
+	        error: function(response, error){
+	            console.log(response, error)
+	            $("#add-form").submit();
+	        }
+	    })
 	});
 {% endblock %}
 </script>
 {% block content %} {{ object }} {{ object.cartitem_set.all }}
 <table class="table">
     {% for item in object.cartitem_set.all %}
-    <tr>
+    <tr id="item-{{ item.item.id }}">
+        <td>
+            {{ item.get_title }}
+        </td>
+        <td>
         <form action="." method="GET">
-            <td>
-                {{ item.get_title }}
-            </td>
-            <td>
-                <input type="hidden" name="item" value="{{ item.item.id }}">
-            </td>
-            <td>
-            	<input type="number" name="quantity" value="{{ item.quantity }}" class="item-quantity">
-            	<input type="submit" class="btn btn-link btn-update" value="Update item" style="display:none">
-            </td>
-            <td>
-                {{ item.line_item_total }}
-            </td>
-            <td class="text-right">
-                <a href="{{ item.remove }}">X</a>
-            </td>
-
-        </form>
+        	<input type="hidden" name="item" value="{{ item.item.id }}">
+        	<input type="number" name="quantity" value="{{ item.quantity }}" class="item-quantity">
+        	<input type="submit" class="btn btn-link btn-update" value="Update item" style="display:none">
+    	</form>
+        </td>
+        <td id="item-line-total-{{ item.item.id }}">
+            {{ item.line_item_total }}
+        </td>
+        <td class="text-right">
+            <a href="{{ item.remove }}">X</a>
+        </td>
     </tr>
     {% endfor %}
     <tr>
-    	<td colspan="4" class="text-right">
+    	<td id="subtotal" colspan="4" class="text-right">
     		Subtotal: {{ object.subtotal }}
     	</td>
     </tr>

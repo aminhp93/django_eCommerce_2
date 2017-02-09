@@ -1,11 +1,11 @@
-from django.http import HttpResponseRedirect, Http404
+from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect, Http404, JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.views.generic.base import View
 from django.views.generic.detail import SingleObjectMixin
 
-from products.models import Variation
 from carts.models import Cart, CartItem
-
+from products.models import Variation
 # Create your views here.
 
 class CartView(SingleObjectMixin, View):
@@ -29,7 +29,9 @@ class CartView(SingleObjectMixin, View):
 	def get(self, request, *args, **kwargs):
 		cart = self.get_object()
 		item_id = request.GET.get("item")
-		delete_item = request.GET.get("delete")
+		delete_item = request.GET.get("delete", False)
+		item_added = False
+		print("33",item_id)
 		if item_id:
 			item_instance = get_object_or_404(Variation, id=item_id)
 			quantity = request.GET.get("quantity", 1)
@@ -39,12 +41,37 @@ class CartView(SingleObjectMixin, View):
 			except:
 				raise Http404
 
-			cart_item = CartItem.objects.get_or_create(cart=cart, item=item_instance)[0]
+			cart_item, created = CartItem.objects.get_or_create(cart=cart, item=item_instance)
+			print("43", created)
+			
+			if created:
+				item_added = True
 			if delete_item:
 				cart_item.delete()
 			else:
 				cart_item.quantity = quantity
 				cart_item.save()
+			if not request.is_ajax():
+				return HttpResponseRedirect(reverse("carts"))
+				# return cart_item.cart.get_absolute_url()
+
+		if request.is_ajax():
+			try:
+				total = cart_item.line_item_total
+			except:
+				total = None
+
+			try:
+				subtotal = cart_item.cart.subtotal
+			except:
+				subtotal = None
+			data = {
+				"delete": delete_item, 
+				"item_added": item_added,
+				"line_total": total,
+				"subtotal": subtotal,
+			}
+			return JsonResponse(data)
 
 		context = {
 			"object": self.get_object()
