@@ -39,15 +39,12 @@ def cart_item_post_save_receiver(sender, instance, *args, **kawrgs):
 
 post_save.connect(cart_item_post_save_receiver, sender=CartItem)
 
-
-
-
 class Cart(models.Model):
 	user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
 	items = models.ManyToManyField(Variation, through=CartItem)
 	timestamp = models.DateTimeField(auto_now_add=True, auto_now=False)
 	updated = models.DateTimeField(auto_now_add=False, auto_now=True)
-	subtotal = models.DecimalField(max_digits=50, decimal_places=2)
+	subtotal = models.DecimalField(max_digits=50, decimal_places=2, default=0)
 
 	def __str__(self):
 		return str(self.id)

@@ -1,20 +1,7 @@
 {% extends 'base.html' %}
+
 <script>
 {% block jquery %}
-
-function setPrice() {
-    var price = $(".variation_select option:selected").attr("data-price");
-
-    var sale_price = $(".variation_select option:selected").attr("data-sale-price");
-    if (sale_price != "" && sale_price != "None" && sale_price != null) {
-        $("#price").html("<h3>" + sale_price + " <small class='original-price'>" + price + "</small></h3>");
-    } else {
-        $("#price").text(price);
-    }
-
-    var img = $(".variation_select optioin:selected").attr("data-img");
-    $("img").attr("src", img);
-}
 
 setPrice()
 $(".variation_select").change(function() {
@@ -32,18 +19,24 @@ $("#submit-btn").click(function(e){
         success: function(data){
             console.log(data)
             $("#jquery-message").text("Added " + data.item_added + " Deleted " + data.delete)
+            showFlashMessage("Product added");
+            
         },
         error: function(response, error){
             console.log(response, error)
             $("#add-form").submit();
         }
     })
-    
 })
 
 {% endblock %}
 </script>
 {% block content %}
+<br>
+<div class="alert-container">
+    
+</div>
+
 <div class="row">
     <div class="col-sm-8">
         <h1>Product detail: {{ object.title }}</h1> {% if object.get_image_url %}

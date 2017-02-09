@@ -31,7 +31,6 @@ class CartView(SingleObjectMixin, View):
 		item_id = request.GET.get("item")
 		delete_item = request.GET.get("delete", False)
 		item_added = False
-		print("33",item_id)
 		if item_id:
 			item_instance = get_object_or_404(Variation, id=item_id)
 			quantity = request.GET.get("quantity", 1)
@@ -42,7 +41,6 @@ class CartView(SingleObjectMixin, View):
 				raise Http404
 
 			cart_item, created = CartItem.objects.get_or_create(cart=cart, item=item_instance)
-			print("43", created)
 			
 			if created:
 				item_added = True

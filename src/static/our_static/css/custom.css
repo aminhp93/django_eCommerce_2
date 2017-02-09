@@ -11,3 +11,10 @@
 	font-size: 18px;
 	vertical-align: middle;
 }
+
+.container-alert-flash{
+    width: 300px;
+    position: absolute;
+    z-index: 1000;
+    top: -60px;
+}

@@ -27,6 +27,7 @@
 	            	$("#item-line-total-"+item).text(data.line_total);
 	            	$("#subtotal").text(data.subtotal);
 	            }
+	            showFlashMessage("Cart updated");
 	        },
 	        error: function(response, error){
 	            console.log(response, error)
@@ -36,7 +37,11 @@
 	});
 {% endblock %}
 </script>
-{% block content %} {{ object }} {{ object.cartitem_set.all }}
+{% block content %}
+<div class="alert-container">
+    
+</div>
+{{ object }} {{ object.cartitem_set.all }}
 <table class="table">
     {% for item in object.cartitem_set.all %}
     <tr id="item-{{ item.item.id }}">
