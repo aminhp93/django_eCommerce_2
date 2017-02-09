@@ -1,6 +1,35 @@
 {% extends "base.html" %}
-{% block content %}
-{{ object }}
-{{ object.items.all }}
-sfasd
+<script>
+{% block jquery %}
+	$(".item-quantity").change(function(){
+		$(this).next(".btn-update").fadeIn();
+	});
+{% endblock %}
+</script>
+{% block content %} {{ object }} {{ object.cartitem_set.all }}
+<table class="table">
+    {% for item in object.cartitem_set.all %}
+    <tr>
+        <form action="." method="GET">
+            <td>
+                {{ item.get_title }}
+            </td>
+            <td>
+                <input type="hidden" name="item" value="{{ item.item.id }}">
+            </td>
+            <td>
+            	<input type="number" name="quantity" value="{{ item.quantity }}" class="item-quantity">
+            	<input type="submit" class="btn btn-link btn-update" value="Update item" style="display:none">
+            </td>
+            <td>
+                {{ item.line_item_total }}
+            </td>
+            <td class="text-right">
+                <a href="{{ item.remove }}">X</a>
+            </td>
+
+        </form>
+    </tr>
+    {% endfor %}
+</table>
 {% endblock %}

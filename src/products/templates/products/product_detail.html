@@ -40,9 +40,9 @@ $(".variation_select").change(function() {
         <form action="{% url 'carts' %}" method="GET">
             {% if object.variation_set.count > 1 %}
             <h3 id="price">
-                 <select name="" id="" class="form-control variation_select">
+                 <select name="item" id="" class="form-control variation_select">
                     {% for variation in object.variation_set.all %}
-                    <option name="item" data-image="" data-sale-price="{{ variation.sale_price }}" data-price="{{ variation.price }}" value="{{ variation.id }}">{{ variation }}</option>
+                    <option data-image="" data-sale-price="{{ variation.sale_price }}" data-price="{{ variation.price }}" value="{{ variation.id }}">{{ variation }}</option>
                     {% endfor %}
                 </select>
             </h3> 

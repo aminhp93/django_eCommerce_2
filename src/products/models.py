@@ -74,6 +74,12 @@ class Variation(models.Model):
 			html_text = "<span class='price'>{}</span>".format(self.price)
 		return mark_safe(html_text)
 
+	def add_to_cart(self):
+		return "{}?item={}&quantity=1".format(reverse("carts"), self.id)
+
+	def remove_from_cart(self):
+		return "{}?item={}&quantity=1&delete=True".format(reverse("carts"), self.id)
+
 def product_post_saved_receiver(sender, instance, created, *args, **kwargs):
 	print(sender, instance, created)
 	product = instance
