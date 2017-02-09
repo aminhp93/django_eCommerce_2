@@ -19,15 +19,22 @@
 	        url: "{% url 'carts' %}",
 	        data: data,
 	        success: function(data){
-	            console.log(data)
-	            $("#jquery-message").text("Added " + data.item_added + " Deleted " + data.delete)
+	            console.log(data);
 	            if (data.delete){
 	            	$("#item-"+item).fadeOut();
 	            } else {
 	            	$("#item-line-total-"+item).text(data.line_total);
 	            	$("#subtotal").text(data.subtotal);
 	            }
-	            showFlashMessage("Cart updated");
+	            var message = "";
+	            if (data.item_added){
+	            	message = "New item added"
+	            } else if (data.delete) {
+	            	message = "Item removed"
+	            } else {
+	            	message = "Item updated"
+	            }
+	            showFlashMessage(message);
 	        },
 	        error: function(response, error){
 	            console.log(response, error)

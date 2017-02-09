@@ -18,9 +18,7 @@ $("#submit-btn").click(function(e){
         data: form_data,
         success: function(data){
             console.log(data)
-            $("#jquery-message").text("Added " + data.item_added + " Deleted " + data.delete)
-            showFlashMessage("Product added");
-            
+            showFlashMessage(data.flash_message);
         },
         error: function(response, error){
             console.log(response, error)
