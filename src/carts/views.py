@@ -31,11 +31,12 @@ class CartView(SingleObjectMixin, View):
 		# request.session.set_expiry(300) # 5 minutes
 		cart_id = self.request.session.get("cart_id")
 		if cart_id == None:
-			cart = Cart()
+			cart = Cart()			
 			cart.save()
 			cart_id = cart.id
 			self.request.session["cart_id"] = cart_id
 		cart = Cart.objects.get(id=cart_id)
+		cart.tax_percentage = 0.075
 		if self.request.user.is_authenticated():
 			cart.user = self.request.user
 			cart.save()
@@ -44,7 +45,6 @@ class CartView(SingleObjectMixin, View):
 	def get(self, request, *args, **kwargs):
 		cart = self.get_object()
 		item_id = request.GET.get("item")
-		print("47", item_id, "asdf")
 		delete_item = request.GET.get("delete", False)
 		item_added = False
 		flash_message = ""
@@ -75,6 +75,7 @@ class CartView(SingleObjectMixin, View):
 				return HttpResponseRedirect(reverse("carts"))
 				# return cart_item.cart.get_absolute_url()
 
+			
 		if request.is_ajax():
 			try:
 				total = cart_item.line_item_total
@@ -87,6 +88,16 @@ class CartView(SingleObjectMixin, View):
 				subtotal = None
 
 			try:
+				cart_total = cart_item.cart.total
+			except:
+				cart_total = None
+
+			try:
+				tax_total = cart_item.cart.tax_total
+			except:
+				tax_total = None
+
+			try:
 				total_items = cart_item.cart.items.count()
 			except:
 				total_items = 0
@@ -96,6 +107,8 @@ class CartView(SingleObjectMixin, View):
 				"item_added": item_added,
 				"line_total": total,
 				"subtotal": subtotal,
+				"cart_total": cart_total,
+				"tax_total": tax_total,
 				"flash_message": flash_message,
 			}
 			return JsonResponse(data)

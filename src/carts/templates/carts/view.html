@@ -27,6 +27,8 @@
 	            	$("#item-line-total-"+item).text(data.line_total);
 	            }
 	            $("#subtotal").text(data.subtotal);
+	            $("#taxtotal").text(data.tax_total);
+	            $("#carttotal").text(data.cart_total);
 
 	            if (data.total_items == 0){
 	            	$(".table").fadeOut();
@@ -86,8 +88,18 @@
 	    </tr>
 	    {% endfor %}
 	    <tr>
-	    	<td id="subtotal" colspan="4" class="text-right">
-	    		Subtotal: {{ object.subtotal }}
+	    	<td colspan="4" class="text-right">
+	    		<span id="subtotal">Subtotal: {{ object.subtotal }}</span>
+	    	</td>
+	    </tr>
+	    <tr>
+	    	<td colspan="4" class="text-right">
+	    		<span id="taxtotal">Tax ({{object.tax_percentage}}%): {{ object.tax_total }}</span>
+	    	</td>
+	    </tr>
+	    <tr>
+	    	<td colspan="4" class="text-right">
+	    		<span id="carttotal">Total: {{ object.total }}</span>
 	    	</td>
 	    </tr>
 	</table>
