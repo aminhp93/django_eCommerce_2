@@ -20,7 +20,7 @@ from django.conf.urls.static import static
 
 from newsletter import views as newsletter_views
 from e_commerce_2 import views as e_commerce_2_views
-from carts.views import CartView
+from carts.views import CartView, ItemCountView
 
 urlpatterns = [
     url(r'^$', newsletter_views.home, name='home'),
@@ -31,7 +31,8 @@ urlpatterns = [
     url(r'^accounts/', include('registration.backends.default.urls')),
     url(r'^products/', include('products.urls')),
     url(r'^categories/', include('products.urls_categories')),
-    url(r'^carts/', CartView.as_view(), name='carts'),
+    url(r'^carts/$', CartView.as_view(), name='carts'),
+    url(r'^carts/count/$', ItemCountView.as_view(), name='item_count'),
 ]
 
 if settings.DEBUG:

@@ -21,3 +21,24 @@ window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.
 <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 <script src="{% static 'js/ie10-viewport-bug-workaround.js' %}"></script>
 <script src="{% static 'js/custom.js' %}"></script>
+<script>
+
+	function updateCartItemCount(){
+		var badge = $("#cart-count-badge");
+
+		$.ajax({
+			type: "GET",
+			url: "{% url 'item_count' %}",
+			success: function(data){
+				badge.text(data.count);
+			},
+			error: function(response, error){
+				console.log(response, error);
+			}
+		})
+	}
+
+	$(document).ready(function(){
+		updateCartItemCount()	
+	})
+</script>

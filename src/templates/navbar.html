@@ -23,7 +23,7 @@
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li>
-                    <a href=""><i class="fa fa-shopping-cart fa-navbar-cart" aria-hidden="true"></i> <span class="badge">0</span></a>
+                    <a href="{% url 'carts' %}"><i class="fa fa-shopping-cart fa-navbar-cart" aria-hidden="true"></i><span id="cart-count-badge" class="badge">{{ request.session.cart_item_count }}</span></a>
                 </li>
                 {% if request.user.is_authenticated %}
                 <li><a href="{% url 'auth_logout' %}">Logout</a></li>
