@@ -44,6 +44,7 @@ class CartView(SingleObjectMixin, View):
 	def get(self, request, *args, **kwargs):
 		cart = self.get_object()
 		item_id = request.GET.get("item")
+		print("47", item_id, "asdf")
 		delete_item = request.GET.get("delete", False)
 		item_added = False
 		flash_message = ""
