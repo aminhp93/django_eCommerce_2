@@ -24,10 +24,13 @@ class AddressSelectFormView(FormView):
 
 		return form
 
-	def form_valid(self, *args, **kwargs):
-		form = super().form_valid(*args, **kwags)
-		print(form)
-		return form
+	def form_valid(self, form, *args, **kwargs):
+		billing_address = form.cleaned_data["billing_address"]
+		shipping_address = form.cleaned_data["shipping_address"]
+		self.request.session["billing_address_id"] = billing_address.id
+		self.request.session["shipping_address_id"] = shipping_address.id
+
+		return super().form_valid(form, *args, **kwargs)
 
 	def get_success_url(self, *args, **kwags):
 		return "/checkout/"
