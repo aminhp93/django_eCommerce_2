@@ -21,7 +21,7 @@ from django.conf.urls.static import static
 from newsletter import views as newsletter_views
 from e_commerce_2 import views as e_commerce_2_views
 from carts.views import CartView, ItemCountView, CheckoutView
-from orders.views import AddressSelectFormView
+from orders.views import AddressSelectFormView, UserAddressCreateView
 
 urlpatterns = [
     url(r'^$', newsletter_views.home, name='home'),
@@ -36,6 +36,8 @@ urlpatterns = [
     url(r'^carts/count/$', ItemCountView.as_view(), name='item_count'),
     url(r'^checkout/$', CheckoutView.as_view(), name='checkout'),
     url(r'^checkout/address/$', AddressSelectFormView.as_view(), name='order_address'),
+    url(r'^checkout/address/create/$', UserAddressCreateView.as_view(), name='order_address_create'),
+
 ]
 
 if settings.DEBUG:

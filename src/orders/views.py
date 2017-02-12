@@ -1,26 +1,62 @@
-from django.shortcuts import render
-from django.views.generic.edit import FormView
+from django.contrib import messages
+from django.shortcuts import render, redirect
+from django.views.generic.edit import CreateView, FormView
 
-from .forms import AddressForm
-from .models import UserAddress
+from .forms import AddressForm, UserAddressForm
+from .models import UserAddress, UserCheckout
 # Create your views here.
+
+class UserAddressCreateView(CreateView):
+	form_class = UserAddressForm
+	template_name = "forms.html"
+	success_url = "/checkout/address/"
+
+	def get_checkout_user(self):
+		user_checkout_id = self.request.session.get("user_checkout_id")
+		user_checkout = UserCheckout.objects.get(id=user_checkout_id)
+		return user_checkout
+
+	def form_valid(self, form, *args, **kwargs):
+		form.instance.user = self.get_checkout_user()
+		return super().form_valid(form, *args, **kwargs)
 
 class AddressSelectFormView(FormView):
 	form_class = AddressForm
 	template_name = "orders/address_select.html"
 
-	def get_form(self, *args, **kwargs):
-		form = super().get_form(*args, **kwargs)
+	def dispatch(self, *args, **kwargs):
+		b_address, s_address = self.get_addresses()
+		print("20", b_address)
 
-		form.fields["billing_address"].queryset = UserAddress.objects.filter(
-				user__email=self.request.user.email,
+		if b_address.count() == 0:
+			messages.success(self.request, "Please add a billing address befefore continuing")
+			return redirect("order_address_create")
+		elif s_address.count() == 0:
+			messages.success(self.request, "Please add a shippin address befefore continuing")
+			return redirect("order_address_create")
+		else:
+			return super().dispatch(*args, **kwargs)
+
+	def get_addresses(self, *args, **kwargs):
+		user_checkout = self.get_checkout_user()
+		b_address = UserAddress.objects.filter(
+				user=user_checkout,
 				type="billing",
 			)
 
-		form.fields["shipping_address"].queryset = UserAddress.objects.filter(
-				user__email=self.request.user.email,
+		s_address = UserAddress.objects.filter(
+				user=user_checkout,
+				# user__email=self.request.user.email,
 				type="shipping",
 			)
+		return b_address, s_address
+
+	def get_form(self, *args, **kwargs):
+		form = super().get_form(*args, **kwargs)
+		b_address, s_address = self.get_addresses()
+
+		form.fields["billing_address"].queryset = b_address
+		form.fields["shipping_address"].queryset = s_address
 
 		return form
 
@@ -34,3 +70,5 @@ class AddressSelectFormView(FormView):
 
 	def get_success_url(self, *args, **kwags):
 		return "/checkout/"
+
+

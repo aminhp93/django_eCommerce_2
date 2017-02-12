@@ -1,32 +1,54 @@
-{% extends 'base.html' %}
-{% load i18n %}
-{% load crispy_forms_tags %}
-{% block content %}
-<br>
-{% if not user_can_continue %}
+{% extends 'base.html' %} {% load i18n %} {% load crispy_forms_tags %} {% block content %}
+<br> {% if not user_can_continue %}
 <div class="row">
-	<div class="col-sm-6">
-		<p class="lead">Continue as Guest</p>
-		<form action="" method="POST">
-			{% csrf_token %}
-			{{ form|crispy }}
-			<input type="submit" value="Continue as guest" class="btn btn-success">
-		</form>
-
-	</div>
-	<div class="col-sm-6">
-		<p class="lead">Login to continue</p>
-		<form action="{% url 'auth_login' %}" method="POST">
-			{% csrf_token %}
-			{{ login_form|crispy }}
-			<input type="hidden" name="next" value="{{ next_url }}">
-			<input type="submit" class="btn btn-success" value="Login">	
-		</form>
-		{{ next_url }}
-		<p>{% trans "Forgot your password?" %} <a href="{% url 'auth_password_reset' %}">{% trans "Reset it" %}</a>.</p>
-		<p>{% trans "Not a member?" %} <a href="{% url 'registration_register' %}">{% trans "Register" %}</a>.</p>
-	</div><br>
+    <div class="col-sm-6">
+        <p class="lead">Continue as Guest</p>
+        <form action="" method="POST">
+            {% csrf_token %} {{ form|crispy }}
+            <input type="submit" value="Continue as guest" class="btn btn-success">
+        </form>
+    </div>
+    <div class="col-sm-6">
+        <p class="lead">Login to continue</p>
+        <form action="{% url 'auth_login' %}" method="POST">
+            {% csrf_token %} {{ login_form|crispy }}
+            <input type="hidden" name="next" value="{{ next_url }}">
+            <input type="submit" class="btn btn-success" value="Login">
+        </form>
+        {{ next_url }}
+        <p>{% trans "Forgot your password?" %} <a href="{% url 'auth_password_reset' %}">{% trans "Reset it" %}</a>.</p>
+        <p>{% trans "Not a member?" %} <a href="{% url 'registration_register' %}">{% trans "Register" %}</a>.</p>
+    </div>
+    <br>
 </div>
-{% endif %}
-
-{% endblock %}
+{% else %}
+<div class="col-sm-4 col-sm-offset-4 text-center">
+    <p class="lead">
+        Your order
+    </p>
+    <table class="table">
+		<tr>
+			<td>{{ order.cart.cartitem_set.count }} items<br>
+			{% for i in order.cart.cartitem_set.all %}
+			<b>{{ i.get_title }}</b>
+			{% endfor %}
+			</td>
+		</tr>
+        <tr>
+            <td>Sub Total: {{ order.cart.subtotal }}</td>
+        </tr>
+        <tr>
+            <td>Tax: {{ order.cart.tax_total }}</td>
+        </tr>
+        <tr>
+            <td>Item Total: {{ order.cart.total }}</td>
+        </tr>
+        <tr>
+            <td>Shipping: {{ order.shipping_total_price }}</td>
+        </tr>
+        <tr>
+            <td>Order Total: {{ order.order_total }}</td>
+        </tr>
+    </table>
+</div>
+{% endif %} {% endblock %}
