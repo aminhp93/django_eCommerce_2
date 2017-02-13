@@ -17,7 +17,7 @@ class CartOrderMixin(object):
 	def get_cart(self, *args, **kwargs):
 		cart_id = self.request.session.get("cart_id")
 		if cart_id == None:
-			return redirect("carts")
+			return None
 		cart = Cart.objects.get(id=cart_id)
 		if cart.items.count() == None:
 			return None
