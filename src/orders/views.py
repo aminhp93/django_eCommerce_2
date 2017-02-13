@@ -4,6 +4,7 @@ from django.views.generic.edit import CreateView, FormView
 
 from .forms import AddressForm, UserAddressForm
 from .models import UserAddress, UserCheckout
+from .mixins import CartOrderMixin
 # Create your views here.
 
 class UserAddressCreateView(CreateView):
@@ -20,7 +21,7 @@ class UserAddressCreateView(CreateView):
 		form.instance.user = self.get_checkout_user()
 		return super().form_valid(form, *args, **kwargs)
 
-class AddressSelectFormView(FormView):
+class AddressSelectFormView(CartOrderMixin, FormView):
 	form_class = AddressForm
 	template_name = "orders/address_select.html"
 
@@ -38,7 +39,8 @@ class AddressSelectFormView(FormView):
 			return super().dispatch(*args, **kwargs)
 
 	def get_addresses(self, *args, **kwargs):
-		user_checkout = self.get_checkout_user()
+		user_checkout_id = self.request.session.get("user_checkout_id")
+		user_checkout = UserCheckout.objects.get(id=user_checkout_id)
 		b_address = UserAddress.objects.filter(
 				user=user_checkout,
 				type="billing",
@@ -63,8 +65,10 @@ class AddressSelectFormView(FormView):
 	def form_valid(self, form, *args, **kwargs):
 		billing_address = form.cleaned_data["billing_address"]
 		shipping_address = form.cleaned_data["shipping_address"]
-		self.request.session["billing_address_id"] = billing_address.id
-		self.request.session["shipping_address_id"] = shipping_address.id
+		order = self.get_order()
+		order.billing_address = billing_address
+		order.shipping_address = shipping_address
+		order.save()
 
 		return super().form_valid(form, *args, **kwargs)
 

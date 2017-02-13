@@ -51,4 +51,14 @@
         </tr>
     </table>
 </div>
+<div class="col-sm-4 col-sm-offset-4 text-center">
+	<p><b>Billing To</b><br>
+		{{ order.billing_address.get_address }}
+	</p>
+	<p><b>Shipping To</b><br>
+		{{ order.shipping_address.get_address }}
+	</p>
+	<p><a href="{% url 'order_address' %}">Change a Address</a></p>
+	<p><b>Finalize your order</b></p>
+</div>
 {% endif %} {% endblock %}

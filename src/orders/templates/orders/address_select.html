@@ -1,10 +1,16 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
-<form action="" method="POST">
-	{% csrf_token %}
-	{{ form|crispy }}
-	<input type="submit">	
-</form>
+<div class="col-sm-4 col-sm-offset-4 text-center">
+	<p class="lead">
+		Select your address for this order
+	</p>
+	<form action="" method="POST">
+		{% csrf_token %}
+		{{ form|crispy }}
+		<input type="submit" class="btn btn-success">	
+	</form>
+</div>
+
 
 {% endblock %}

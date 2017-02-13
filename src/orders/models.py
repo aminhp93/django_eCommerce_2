@@ -30,6 +30,9 @@ class UserAddress(models.Model):
 	def __str__(self):
 		return self.street
 
+	def get_address(self):
+		return "{} {} {} {}".format(self.street, self.state, self.city, self.zipcode)
+
 class Order(models.Model):
 	cart = models.ForeignKey(Cart)
 	user = models.ForeignKey(UserCheckout, null=True)
