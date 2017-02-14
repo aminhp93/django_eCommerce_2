@@ -15,14 +15,23 @@ class OrderDetail(DetailView):
 
 	def dispatch(self, request, *args, **kwargs):
 		try:
+			
 			user_checkout_id = self.request.session.get("user_checkout_id")
 			user_checkout = UserCheckout.objects.get(id=user_checkout_id)
+			print(user_checkout_id)
+			print("18")
 		except UserCheckout.DoesNotExist:
+			
 			user_checkout = UserCheckout.objects.get(user=request.user)
+			print("22")
 		except:
+			
 			user_checkout = None
+			print("25")
 		
+		print(user_checkout)
 		obj = self.get_object()
+		print("26", obj)
 		if obj.user == user_checkout and user_checkout is not None:
 			return super().dispatch(request, *args, **kwargs)
 		else:

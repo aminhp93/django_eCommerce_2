@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # third party app
     'crispy_forms',
+    # 'registration',
     # my apps
     'carts',
     'orders',
@@ -161,3 +162,9 @@ REGISTRATION_AUTO_LOGIN = True # Automatically log the user in.
 SITE_ID = 1
 
 LOGIN_REDIRECT_URL = "/"
+
+# Braintree Payment Details
+BRAINTREE_MERCHANT_ID = "gf7vc7vvr5ttnby8"
+BRAINTREE_PUBLIC_KEY = "xdm372xh9cyj8p4n"
+BRAINTREE_PRIVATE_KEY = "ac011869ffcf8f1c03a3b5696c5ebc8a"
+BRAINTREE_ENVIRONMENT = "Sandbox"

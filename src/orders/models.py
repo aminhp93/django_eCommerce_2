@@ -6,13 +6,35 @@ from django.db.models.signals import pre_save, post_save, post_delete
 
 from carts.models import Cart
 
+import braintree
+
+if settings.DEBUG:
+	braintree.Configuration.configure(braintree.Environment.Sandbox,
+                                  merchant_id=settings.BRAINTREE_MERCHANT_ID,
+                                  public_key=settings.BRAINTREE_PUBLIC_KEY,
+                                  private_key=settings.BRAINTREE_PRIVATE_KEY)
 # Create your models here.
 class UserCheckout(models.Model):
 	user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True) #not required
 	email = models.EmailField(unique=True) #-> required
+	braintree_id = models.CharField(max_length=120, null=True, blank=True)
 
 	def __str__(self):
 		return self.email
+
+def update_braintree_id(sender, instance, *args, **kwargs):
+	if not instance.braintree_id:
+		result = braintree.Customer.create({
+				"email": instance.email,
+			})
+		if result.is_success:
+			print(result.customer)
+			instance.braintree_id = result.customer.id
+			instance.save()
+		
+
+post_save.connect(update_braintree_id, sender=UserCheckout)
+
 
 ADDRESS_TYPE = (
 	('billing', 'Billing'),
@@ -61,19 +83,6 @@ def order_pre_save(sender, instance, *args, **kwargs):
 	instance.order_total = order_total
 
 pre_save.connect(order_pre_save, sender=Order)
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
