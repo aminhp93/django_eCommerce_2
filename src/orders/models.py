@@ -72,7 +72,8 @@ class UserAddress(models.Model):
 
 ORDER_STATUS_CHOICES = (
 		('created', 'Created'),
-		('completed', 'Completed'),
+		('paid', 'Paid'),
+		('shipped', 'Shipped'),
 	)
 
 class Order(models.Model):
@@ -83,12 +84,15 @@ class Order(models.Model):
 	shipping_address = models.ForeignKey(UserAddress, related_name="shipping_address", null=True)
 	shipping_total_price = models.DecimalField(decimal_places=2, max_digits=50, default=0.00)
 	order_total = models.DecimalField(decimal_places=2, max_digits=50)
+	order_id = models.CharField(max_length=20, null=True, blank=True)
 
 	def __str__(self):
 		return str(self.cart.id)
 
-	def mark_completed(self):
-		self.status = 'completed'
+	def mark_completed(self, order_id=None):
+		self.status = 'paid'
+		if order_id and not self.order_id:
+			self.order_id = order_id
 		self.save()
 
 def order_pre_save(sender, instance, *args, **kwargs):

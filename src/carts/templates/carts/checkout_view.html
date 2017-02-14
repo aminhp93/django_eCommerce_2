@@ -1,4 +1,15 @@
-{% extends 'base.html' %} {% load i18n %} {% load crispy_forms_tags %} {% block content %}
+{% extends 'base.html' %} {% load i18n %} {% load crispy_forms_tags %} 
+<script>
+{% block jquery %}
+var clientToken = "{{ client_token }}"
+
+braintree.setup(clientToken, "dropin", {
+    container: "payment-form"
+})
+{% endblock %}    
+</script>
+
+{% block content %}
 {{ client_token }}
 <br> {% if not user_can_continue %}
 <div class="row">
@@ -27,9 +38,12 @@
 	<p><a href="{% url 'order_address' %}">Change an Address</a></p>
     <form action="{% url 'checkout_final' %}" method="POST">
         {% csrf_token %}
-        <input type="hidden" value="ABC" name="payment_token">
-        <input type="submit">
+        <div id="payment-form"></div>
+<!--         <input type="hidden" value="ABC" name="payment_token">
+ -->        <input type="submit" value="Complete order">
     </form>
-	<p><b>Finalize your order</b></p>
+    <form action="/checkout" id="checkout" method="POST">
+        <input type="submit" value="Pay $10">
+    </form>
 </div>
 {% endif %} {% endblock %}

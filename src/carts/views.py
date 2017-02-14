@@ -1,3 +1,5 @@
+
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
 from django.core.urlresolvers import reverse
@@ -13,6 +15,13 @@ from orders.mixins import CartOrderMixin
 from orders.models import UserCheckout, UserAddress, Order
 from products.models import Variation
 
+import braintree
+
+if settings.DEBUG:
+	braintree.Configuration.configure(braintree.Environment.Sandbox,
+                                  merchant_id=settings.BRAINTREE_MERCHANT_ID,
+                                  public_key=settings.BRAINTREE_PUBLIC_KEY,
+                                  private_key=settings.BRAINTREE_PRIVATE_KEY)
 # Create your views here.
 
 class ItemCountView(View):
@@ -202,13 +211,32 @@ class CheckoutView(CartOrderMixin, FormMixin, DetailView):
 
 class CheckoutFinalView(CartOrderMixin, View):
 	def post(self, request, *args, **kwargs):
+		print(request.POST)
 		order = self.get_order()
-		if request.POST.get("payment_token") == "ABC":
-			order.mark_completed()
-			messages.success(request, "Thank you for your order")
-			del request.session["cart_id"]
-			del request.session["order_id"]
-			print("205")
+		order_total = order.order_total
+		nonce = request.POST.get("payment_method_nonce")
+		if nonce:
+			result = braintreee.Transaction.slae({
+					"amount": order_total,
+					"payment_method_nonce": nonce,
+					"billing": {
+						"postal_code": "{}".format(order.billing_address.zipcode),
+
+					},
+					"options": {
+						"submit_for_settlement": True
+					}
+				})
+			if result.is_success:
+				order.order_id = result.transaction.id
+				order.mark_completed()
+				messages.success(request, "Thank you for your order")
+				del request.session["cart_id"]
+				del request.session["order_id"]
+			else:
+				messages.success(request, "{}".format(result.message))
+				return redirect("checkout")
+		
 		return redirect("order_detail", pk=order.pk)
 
 	def get(self, request, *args, **kwargs):
