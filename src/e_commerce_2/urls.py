@@ -21,7 +21,7 @@ from django.conf.urls.static import static
 from newsletter import views as newsletter_views
 from e_commerce_2 import views as e_commerce_2_views
 from carts.views import CartView, ItemCountView, CheckoutView, CheckoutFinalView
-from orders.views import AddressSelectFormView, UserAddressCreateView, OrderList
+from orders.views import AddressSelectFormView, UserAddressCreateView, OrderList, OrderDetail
 
 urlpatterns = [
     url(r'^$', newsletter_views.home, name='home'),
@@ -34,6 +34,7 @@ urlpatterns = [
     url(r'^categories/', include('products.urls_categories')),
 
     url(r'^orders/$', OrderList.as_view(), name='orders'),
+    url(r'^orders/(?P<pk>\d+)/$', OrderDetail.as_view(), name='order_detail'),
     
     url(r'^carts/$', CartView.as_view(), name='carts'),
     url(r'^carts/count/$', ItemCountView.as_view(), name='item_count'),
