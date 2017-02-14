@@ -192,8 +192,11 @@ class CheckoutView(CartOrderMixin, FormMixin, DetailView):
 		return reverse("checkout")
 
 	def get(self, request, *args, **kwargs):
+
 		get_data = super().get(request, *args, **kwargs)
+		print("197", get_data)
 		cart = self.get_object()
+		print("198", cart)
 		if cart == None:
 			return redirect("carts")
 		new_order = self.get_order()
@@ -216,7 +219,7 @@ class CheckoutFinalView(CartOrderMixin, View):
 		order_total = order.order_total
 		nonce = request.POST.get("payment_method_nonce")
 		if nonce:
-			result = braintreee.Transaction.slae({
+			result = braintree.Transaction.sale({
 					"amount": order_total,
 					"payment_method_nonce": nonce,
 					"billing": {

@@ -8,7 +8,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/">MVP Landing</a>
+            <a class="navbar-brand" href="/">Young Man</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
@@ -26,6 +26,7 @@
                     <a href="{% url 'carts' %}"><i class="fa fa-shopping-cart fa-navbar-cart" aria-hidden="true"></i> <span id="cart-count-badge" class="badge">{{ request.session.cart_item_count }}</span></a>
                 </li>
                 {% if request.user.is_authenticated %}
+                <li><a href="{% url 'orders' %}">Orders</a></li>
                 <li><a href="{% url 'auth_logout' %}">Logout</a></li>
                 {% else %}
                 <li><a href="{% url 'registration_register' %}">Register</a></li>

@@ -1,6 +1,7 @@
 from decimal import Decimal
 
 from django.db import models
+from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.db.models.signals import pre_save, post_save, post_delete
 
@@ -89,11 +90,17 @@ class Order(models.Model):
 	def __str__(self):
 		return str(self.cart.id)
 
+	def get_absolute_url(self):
+		return reverse('order_detail', kwargs={"pk": self.pk})
+
 	def mark_completed(self, order_id=None):
 		self.status = 'paid'
 		if order_id and not self.order_id:
 			self.order_id = order_id
 		self.save()
+
+	class Meta:
+		ordering = ["-id"]
 
 def order_pre_save(sender, instance, *args, **kwargs):
 	shipping_total_price = instance.shipping_total_price

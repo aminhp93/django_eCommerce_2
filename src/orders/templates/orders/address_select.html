@@ -8,8 +8,10 @@
 	<form action="" method="POST">
 		{% csrf_token %}
 		{{ form|crispy }}
-		<input type="submit" class="btn btn-success">	
+		<input type="submit" class="btn btn-success" value="Select">
+		<a class="btn btn-default" href="{% url 'order_address_create' %}">Add new</a>
 	</form>
+
 </div>
 
 
