@@ -27,6 +27,7 @@ if settings.DEBUG:
 class ItemCountView(View):
 	def get(self, request, *args, **kwargs):
 		if request.is_ajax():
+			print("tes")
 			cart_id = self.request.session.get("cart_id")
 			if cart_id == None:
 				count = 0
@@ -60,6 +61,7 @@ class CartView(SingleObjectMixin, View):
 	def get(self, request, *args, **kwargs):
 		cart = self.get_object()
 		item_id = request.GET.get("item")
+		print(item_id, "line 63")
 		delete_item = request.GET.get("delete", False)
 		item_added = False
 		flash_message = ""
@@ -91,6 +93,7 @@ class CartView(SingleObjectMixin, View):
 				# return cart_item.cart.get_absolute_url()
 
 		if request.is_ajax():
+
 			try:
 				total = cart_item.line_item_total
 			except:
@@ -177,6 +180,7 @@ class CheckoutView(CartOrderMixin, FormMixin, DetailView):
 		return context
 
 	def post(self, request, *args, **kwargs):
+		print("postttt")
 		self.object = self.get_object()
 		form = self.get_form()
 		
